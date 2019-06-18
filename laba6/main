@@ -1,0 +1,103 @@
+#include <iostream>
+#include <list>
+#include<stdio.h>
+#include<string>
+
+using namespace std;
+
+class AviaSale {
+public:
+    string end_point;
+    string num;
+    string name;
+    string date;
+
+    string asString() {
+        string info = "";
+        info += "(Пункт_назначения: " + end_point + ", ";
+        info += "Номер рейса: " + num + ", ";
+        info += "Фамилия: " + name + ", ";
+        info += "Дата вылета: " + date + ")";
+        return info;
+    }
+};
+
+typedef list<AviaSale> AviaSales;
+
+AviaSale enter_sale_data()
+{
+    AviaSale sale;
+    cin.ignore();
+    cout << "Введите номер рейса: " << endl;
+	cin >> sale.num;
+    getline(cin, sale.end_point);
+    cout << "Введите Пункт назначения: " << endl;
+    cin >> sale.end_point;
+    cout << "Введите фамилию и инициалы пассажира : " << endl;
+    getline(cin, sale.name);
+	cin >> sale.name;
+    cout << "Введите дату вылета: " << endl;
+    getline(cin, sale.date);
+	cin >> sale.date;
+    return sale;
+}
+
+
+void command_line_menu(AviaSales &avia_sales) {
+    string s;
+    char data[200];
+    do {
+        cout << "__________________________________________________" << endl;
+        cout << "Enter command as string:"<< endl;
+		cout << "1. Добавить заявку в список"" << endl;
+		cout << "2. удалить заявку" << endl;
+		cout << "3. вывод заявок по заданному номеру рейса и дате вылета" << endl;
+		cout << "4. вывод всех заявок" << endl;
+		cout << "5. выход" << endl;
+        cin >> s;
+        if (s == "4") {
+            for (AviaSales::iterator item = avia_sales.begin(); item != avia_sales.end(); item++) {
+                cout << item->asString() << endl;
+            }
+        }
+        if (s == "1") {
+            AviaSale sale = enter_sale_data();
+            avia_sales.push_back(sale);
+        }
+        if (s == "2"){
+            AviaSale sale = enter_sale_data();
+            AviaSales::iterator sale_iter = avia_sales.begin();
+            bool found = false;
+            for (AviaSales::iterator item = avia_sales.begin(); item != avia_sales.end(); item ++){
+                if ((item->end_point == sale.end_point)
+                    && (item->date == sale.date)
+                    && (item->name == sale.name)
+                    && (item->num == sale.num)){
+                    sale_iter = item;
+                    found = true;
+                }
+            }
+            if (found){
+                avia_sales.erase(sale_iter);
+            }
+        }
+        if (s == "3"){
+            AviaSale sale;
+            cin.ignore();
+            cout << "Введите фамилию и инициалы пассажира : " << endl;
+            getline(cin, sale.name);
+            cout << "Введите дату вылета: " << endl;
+            getline(cin, sale.date);
+            for (AviaSales::iterator item = avia_sales.begin(); item != avia_sales.end(); item++) {
+                if ((item->name == sale.name) && (item->date == sale.date))
+                    cout << item->asString() << endl;
+            }
+        }
+    } while (s != "5");
+}
+int main() {
+	setlocale(LC_ALL, "Russian");
+    AviaSales avia_sales;
+    command_line_menu(avia_sales);
+    return 0;
+}
