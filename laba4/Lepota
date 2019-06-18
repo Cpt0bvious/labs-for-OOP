@@ -1,0 +1,72 @@
+#include <iostream>  
+#include <stdio.h>
+#include <string>
+using namespace std;
+
+class AEROFLOT {
+public:
+	string destination, flight, type;
+};
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	const int a=7;
+	AEROFLOT plane[a];  
+	AEROFLOT tmp;
+	string tempstr[a]; 
+	string tmps;
+	for (int i = 0; i < a; i++) { 
+		std::cout << "Введите пункт назначения №" << i + 1 << ": ";
+		std::cin >> plane[i].destination;
+		tempstr[i] = plane[i].destination;    //одновременно с заполнением атрибутов destination, синхронно заполняется массив tempstr  
+		std::cout << "Введите номер рейса №" << i + 1 << ": ";
+		std::cin >> plane[i].flight;
+		std::cout << "Введите тип самолета №" << i + 1 << ": ";
+		std::cin >> plane[i].type;
+		std::cout << endl;
+	}
+
+	for (int i = 0; i < a - 1; i++) {    // цикл сортировки массива объектов класса AEROFLOT (сравнивает по первой букве)
+		for (int j = 0; j < a - i - 1; j++) {
+			if (tempstr[j][0] > tempstr[j + 1][0]) {
+				tmp = plane[j + 1];    
+				plane[j + 1] = plane[j]; 
+				plane[j] = tmp; 
+				tmps = tempstr[j + 1];
+				tempstr[j + 1] = tempstr[j];
+				tempstr[j] = tmps;
+
+			}
+		}
+	}
+
+	for (int i = 0; i < a; i++) {
+		std::cout << i + 1 << ") ";
+		std::cout << "Пункт назначения: " << plane[i].destination;
+		std::cout << ", тип самолета: " << plane[i].type;
+		std::cout << ", номер рейса: " << plane[i].flight << ";" << endl;
+	}
+
+	string pltype;
+ask_again:   
+	int isfound = 0;  
+	std::cout << "Введите тип самолета, по которому нужна информация: ";
+	std::cin >> pltype;
+	for (int i = 0; i < a; i++) {  
+		if (plane[i].type == pltype) {
+			isfound++;  
+			std::cout << "Найден пункт назначения " << plane[i].destination << " с номером рейса " << plane[i].flight << endl;
+		}
+	}
+	if (isfound == 0) {
+		std::cout << "Рейсов по данному типу не найдено" << endl;
+	}
+	std::cout << "Повторить поиск? (1 - Да, [все остальное] - Нет): ";
+	cin >> isfound;
+	if (isfound == 1) {
+		goto ask_again;
+	}
+	system("pause");
+	return 0;
+}
